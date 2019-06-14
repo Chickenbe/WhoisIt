@@ -19,7 +19,7 @@ limitations under the License. -->
               android:layout_height="match_parent">
 
     <EditText
-            android:id="@+id/edit_word"
+            android:id="@+id/edit_person"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"

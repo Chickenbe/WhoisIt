@@ -17,7 +17,7 @@ class PersonViewModel(application: Application) : AndroidViewModel(application) 
 
     //this code will run when the object initialize
     init {
-        val personDao = AppDatabase.getDatabase(application).personDao()        //creating an object of database
+        val personDao = AppDatabase.getDatabase(application, viewModelScope).personDao()        //creating an object of database
         repository = PersonRepository(personDao)                                //create repo for data store
         allPerson = repository.allPerson                                        //get a LiveData list of Person object
     }
