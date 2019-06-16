@@ -1,4 +1,4 @@
-package com.example.anton.idapplication
+package com.example.anton.idapplication.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.example.anton.idapplication.R
 
 class NewPersonActivity : AppCompatActivity() {
 

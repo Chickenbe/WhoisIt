@@ -33,4 +33,8 @@ class PersonListAdapter internal constructor(context: Context) : RecyclerView.Ad
     }
 
     override fun getItemCount() = personList.size
+
+    fun getPerson(position: Int) : Person{
+        return personList[position]
+    }
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(entities = [Person::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun personDao(): PersonDAO                              //abstract function that returns PersonDAO object
+    abstract fun personDao(): PersonDAO            //abstract function that returns PersonDAO object
 
 
     //singletone, because we need only one object of database
@@ -36,6 +36,11 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
 
+        /*
+        Callback function is using when the database created
+        That function will delete all data in database when the app restart
+        For async function call here is using coroutinesScope
+        */
         private class PersonDatabaseCallback(private val scope: CoroutineScope) : RoomDatabase.Callback() {
 
             override fun onOpen(db: SupportSQLiteDatabase) {
@@ -48,22 +53,13 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-
         suspend fun populateDatabase(personDao: PersonDAO) {
             personDao.deleteAll()
 
-            var person =
-                Person(
-                    "Anton",
-                    "Ivanovich",
-                    "Velikoborets",
-                    "21.10.1999",
-                    123314
-                )
-            personDao.insert(person)
-            person =
-                Person("Jack", "Morovich", "Hawkins", "05.06.1996", 423137)
-            personDao.insert(person)
+            personDao.insert(Person("Антон", "Михайлович", "Великоборец", "21.01.1999", 14523))
+            personDao.insert(Person("Василий", "Андреевич", "Пашуто", "05.08.1995", 56478))
+            personDao.insert(Person("Анна", "Анатольевич", "Зыбицкая", "19.10.2001", 75678))
+            personDao.insert(Person("Артём", "Витальевич", "Грецкий", "01.03.1989", 34528))
         }
     }
 }

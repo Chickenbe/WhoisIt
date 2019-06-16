@@ -3,4 +3,8 @@
     <string name="person_label">Users</string>
     <string name="hint_word">Word…</string>
     <string name="button_save">Save</string>
+    <string name="personal_inf_label">Personal information</string>
+    <string name="last_name_label">Last name:</string>
+    <string name="birthday_label">Birthday:</string>
+    <string name="id_label">ID:</string>
 </resources>
