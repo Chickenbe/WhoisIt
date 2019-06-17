@@ -13,19 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:padding="15dp">
+              android:layout_height="wrap_content">
 
-    <TextView
-            android:id="@+id/textView"
+    <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/basic"
-            android:textSize="19sp"
-            android:textColor="#606866"
-            android:textAlignment="viewStart" android:text="Веополрлд"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+            android:id="@+id/imageView" android:scaleType="centerInside"
+            android:background="@drawable/back"/>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/file_name_textView"
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:layout_marginTop="30dp"/>
 </LinearLayout>
+
+
+
