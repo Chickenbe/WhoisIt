@@ -1,9 +1,7 @@
 package com.example.anton.idapplication.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
@@ -21,8 +19,6 @@ import com.example.anton.idapplication.database.Person
 import com.example.anton.idapplication.viewmodel.PersonViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
-import java.io.FileOutputStream
-import java.lang.Exception
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.FileProvider
@@ -31,9 +27,10 @@ import androidx.core.content.FileProvider
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MainActivity : AppCompatActivity() {
 
-    private val newPersonActivityRequestCode = 1
-    private val pictureCaptureRequestCode = 2
-    private val dataAddingRequestCode = 3
+    private val NEW_PERSON_ACTIVITY_REQUEST_CODE = 1
+    private val PICTURE_CAPTURE_REQUEST_CODE = 2
+    private val DATA_ADDING_REQUEST_CODE = 3
+
     private lateinit var personViewModel: PersonViewModel
     private var mUri: Uri? = null
 
@@ -57,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         when(requestCode) {
 
-            newPersonActivityRequestCode -> {
+            NEW_PERSON_ACTIVITY_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data.let {
                         val fullName = data!!.getStringExtra(NewPersonActivity.EXTRA_REPLY)
@@ -69,16 +66,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            pictureCaptureRequestCode -> {
+            PICTURE_CAPTURE_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val intent = Intent(this@MainActivity, AddNewDataActivity::class.java)
                     intent.putExtra("imageURI", mUri.toString())
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    startActivityForResult(intent, dataAddingRequestCode)
+                    startActivityForResult(intent, DATA_ADDING_REQUEST_CODE)
                 }
             }
 
-            dataAddingRequestCode -> {
+            DATA_ADDING_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_CANCELED) {
                     Toast.makeText(applicationContext, "Something went wrong!", Toast.LENGTH_LONG).show()
                 } else {
@@ -133,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri)
-        startActivityForResult(intent, pictureCaptureRequestCode)
+        startActivityForResult(intent, PICTURE_CAPTURE_REQUEST_CODE)
     }
 
     private fun generateFileUri(filename: String): Uri? {

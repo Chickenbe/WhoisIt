@@ -7,4 +7,5 @@
     <string name="last_name_label">Last name:</string>
     <string name="birthday_label">Birthday:</string>
     <string name="id_label">ID:</string>
+    <string name="recognize_button_label">Recognize</string>
 </resources>

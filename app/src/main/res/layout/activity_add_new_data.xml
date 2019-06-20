@@ -13,25 +13,56 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
 
-<LinearLayout
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView" android:scaleType="centerInside"
-            android:background="@drawable/back"/>
+<LinearLayout
+        android:id="@+id/linearLayoutID"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+
+    <FrameLayout android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/frameLayoutID">
+
+        <ImageView
+                android:layout_height="500dp"
+                android:layout_width="355dp"
+                android:id="@+id/imageViewPrimary"
+                android:scaleType="fitXY"
+                android:layout_marginTop="5dp"
+                android:paddingVertical="0dp"/>
+
+        <!--<com.example.anton.idapplication.activity.MyImageView-->
+        <!--android:layout_width="345dp"-->
+        <!--android:layout_height="410dp"-->
+        <!--android:id="@+id/imageViewSecondary"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:background="@drawable/back"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:paddingVertical="0dp"/>-->
+
+    </FrameLayout>
+
+    <Button
+            android:text="@string/recognize_button_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/recognize_button" android:layout_marginTop="10dp"/>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/file_name_textView"
             android:textSize="24sp"
             android:textAlignment="center"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="10dp"/>
 </LinearLayout>
 
+</ScrollView>
 
 

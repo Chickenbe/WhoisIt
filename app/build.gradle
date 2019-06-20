@@ -37,6 +37,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    //for Text Recognition API
+    implementation 'com.google.android.gms:play-services-vision:18.0.0'
+
 
     //for floating action button
     implementation 'com.google.android.material:material:1.0.0'
