@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Person::class], version = 2)
+@Database(entities = [Person::class], version = 5)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun personDao(): PersonDAO            //abstract function that returns PersonDAO object
 
@@ -29,7 +29,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "person_db"
-                ).addCallback(PersonDatabaseCallback(scope)).build()
+                )/*.fallbackToDestructiveMigration()*/
+                    .addCallback(PersonDatabaseCallback(scope))
+                    .build()
                 INSTANCE = instance
                 return instance
             }
@@ -54,12 +56,6 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(personDao: PersonDAO) {
-            personDao.deleteAll()
-
-            personDao.insert(Person("Антон", "Михайлович", "Великоборец", "21.01.1999", 14523))
-            personDao.insert(Person("Василий", "Андреевич", "Пашуто", "05.08.1995", 56478))
-            personDao.insert(Person("Анна", "Анатольевич", "Зыбицкая", "19.10.2001", 75678))
-            personDao.insert(Person("Артём", "Витальевич", "Грецкий", "01.03.1989", 34528))
         }
     }
 }

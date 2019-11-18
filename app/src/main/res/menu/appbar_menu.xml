@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/delete_action"
+          android:icon="@drawable/ic_round_delete_outline_24px"
+          app:showAsAction="ifRoom"
+          android:title="@string/Zoom"/>
+
+    <item android:id="@+id/action_done"
+          app:showAsAction="ifRoom"
+          android:icon="@drawable/ic_round_done_outline_24px"
+          android:title="@string/done"
+          android:visible="false"/>
+
+    <item android:title="@string/settings"
+          app:showAsAction="never"/>
+
+    <item android:title="@string/sort_by_name"
+          app:showAsAction="never"/>
+
+    <item android:title="@string/sort_by_date"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/takePhoto_action"
+          app:showAsAction="never"
+          android:title="@string/photo_tmp"/>
+
+</menu>

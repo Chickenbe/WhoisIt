@@ -14,7 +14,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -28,14 +28,15 @@ android {
 }
 
 dependencies {
-    //generate  dependencies
+    //generated  dependencies
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout-solver:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //for Text Recognition API
     implementation 'com.google.android.gms:play-services-vision:18.0.0'
@@ -44,15 +45,14 @@ dependencies {
     //for floating action button
     implementation 'com.google.android.material:material:1.0.0'
 
-
     //for room
-    def room_version = "2.1.0-rc01"
+    def room_version = "2.2.0-alpha02"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
     //for LiveData and ViewModel
-    def lifecycle_version = "2.2.0-alpha01"
+    def lifecycle_version = "2.2.0-alpha03"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version" //for ViewModelScope
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version" //for LiveData
@@ -64,6 +64,12 @@ dependencies {
 
     //for android core-ktx
     implementation 'androidx.core:core-ktx:1.0.2'
+
+    //for PhotoView
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+
+    //for circularImageView
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }
 
 kotlin {

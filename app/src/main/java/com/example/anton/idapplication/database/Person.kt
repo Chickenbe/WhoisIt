@@ -11,7 +11,9 @@ data class Person (
     @ColumnInfo(name = "middle_name") val secondName: String?,
     @ColumnInfo(name = "second_name") val middleName: String?,
     @ColumnInfo(name = "birthday") val birthdayDate: String?,
-    @ColumnInfo(name = "person_num") val personalNum: Int
+    @ColumnInfo(name = "person_num") val personalNum: String?,
+    @ColumnInfo(name = "picture_tag") val pictureTag: String?,
+    @ColumnInfo(name = "date") val date: String?
 ) : Serializable {
     @PrimaryKey(autoGenerate = true) var uid: Int = 0
     val fullName: String

@@ -2,6 +2,7 @@ package com.example.anton.idapplication.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -17,7 +18,10 @@ interface PersonDAO {
     @Query("DELETE FROM person_table")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM person_table ORDER BY second_name ASC")
+    @Delete
+    suspend fun deletePerson(person: Person)
+
+    @Query("SELECT * FROM person_table")
     fun getAllPerson(): LiveData<List<Person>>
 
 }

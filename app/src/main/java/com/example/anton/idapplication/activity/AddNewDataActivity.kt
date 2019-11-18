@@ -13,157 +13,277 @@ import androidx.core.net.toUri
 import com.example.anton.idapplication.R
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.text.TextRecognizer
-import java.lang.StringBuilder
 import com.google.android.gms.vision.text.TextBlock
-import android.graphics.RectF
-import android.util.Log
-import androidx.core.graphics.toRectF
+import android.os.Handler
+import android.view.MotionEvent
+import android.view.View
+import androidx.core.util.isNotEmpty
+import androidx.viewpager.widget.ViewPager
+import com.example.anton.idapplication.MyImageView
 import com.google.android.gms.vision.text.Text
-
-
-private val textElementRectList: MutableList<Text> = mutableListOf()
-private var PRIMARY_PHOTO_WIDTH: Int = 0
-private var PRIMARY_PHOTO_HEIGHT: Int = 0
-private var SECONDARY_PHOTO_WIDTH: Int = 0
-private var SECONDARY_PHOTO_HEIGHT: Int = 0
-
+import com.example.anton.idapplication.adapter.MyPagerAdapter
+import com.example.anton.idapplication.database.Person
+import com.example.anton.idapplication.utils.ImageProperty
+import com.example.anton.idapplication.utils.ResultCode
+import com.google.android.gms.vision.face.Face
+import com.google.android.gms.vision.face.FaceDetector
+import kotlinx.android.synthetic.main.activity_add_new_data.*
+import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
 class AddNewDataActivity : AppCompatActivity() {
-    var imageViewSecondary: ImageView? = null
+    private var currentPageNumber = 0
+    private var mBitMap: Bitmap? = null
+    private var newImageProperty: ImageProperty? = null
+    private var viewPager: ViewPager? = null
+    private var pagerAdapter: MyPagerAdapter? = null
+    private val propertyNameList = arrayListOf("Name", "Last name", "Middle name", "Birthday", "ID number")
+    private val SECONDARY_PHOTO_WIDTH: Float = 345f
+    private val SECONDARY_PHOTO_HEIGHT: Float = 454f
+    private var textElementRectList: MutableList<Text> = mutableListOf()
+    var mFace: Face? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_data)
-        supportActionBar!!.hide()                       //hides action bar
 
         val imageUri = intent.getStringExtra("imageURI")
-        val imageViewPrimary = findViewById<ImageView>(R.id.imageViewPrimary)
-        val recognizeButton = findViewById<Button>(R.id.recognize_button)
-        val fileNameTextView = findViewById<TextView>(R.id.file_name_textView)
         val replyIntent = Intent()
+
+        viewPager = findViewById<ViewPager>(R.id.viewPager)
+        viewPager?.addOnPageChangeListener(MyPageListener())
+        pagerAdapter = MyPagerAdapter(supportFragmentManager, propertyNameList)
+        viewPager?.adapter = pagerAdapter
+        tabLayout.setupWithViewPager(viewPager, true)
 
         if (TextUtils.isEmpty(imageUri)) {
             setResult(Activity.RESULT_CANCELED, replyIntent)
             finish()
         } else {
             val uri: Uri = imageUri.toUri()
-            val bitMap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
-            PRIMARY_PHOTO_HEIGHT = bitMap.height
-            PRIMARY_PHOTO_WIDTH = bitMap.width
-            imageViewPrimary.setImageBitmap(bitMap)
-            imageViewPrimary.setBackgroundResource(R.drawable.back)
-            recognizeButton.setOnClickListener { initRecognizeButtonClickListener(bitMap, fileNameTextView, imageViewPrimary) }
-            fileNameTextView.text = imageUri
-            setResult(Activity.RESULT_OK, replyIntent)
+            mBitMap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+            setNewImageDimensions()
+            imageViewPrimary.setImageBitmap(mBitMap)
+            imageViewPrimary.setBackgroundResource(R.drawable.image_border)
+            recognizeText(imageViewPrimary)
+            detectFace()
         }
     }
 
-    private fun initRecognizeButtonClickListener(bitMap: Bitmap, fileNameTextView: TextView,
-                                                 imageViewPrimary: ImageView) {
-        val textRecognizer: TextRecognizer = TextRecognizer.Builder(applicationContext).build()
-        if (!textRecognizer.isOperational) {
-            fileNameTextView.text = "Error"
-        } else {
-            val frame: Frame = Frame.Builder().setBitmap(bitMap).build()
-            val items = textRecognizer.detect(frame)
-            val strBuilder = StringBuilder()
 
-            for (i in 0 until items.size()) {
-                val item = items.valueAt(i) as TextBlock
 
-                Log.e("Rect coord", "Coord is: ${item.boundingBox.left}, ${item.boundingBox.top}, ${item.boundingBox.right}, ${item.boundingBox.bottom}")
-                strBuilder.append(item.value)
-                strBuilder.append("/")
-                for(line in item.components) {
-                    textElementRectList.add(line)
+    private fun recognizeText(imageViewPrimary: ImageView) {
+        var isOperationalFlag = true
+        val handler = Handler()
+        progressBar.visibility = ProgressBar.VISIBLE
+        Thread(Runnable {
+            val textRecognizer: TextRecognizer = TextRecognizer.Builder(applicationContext).build()
+            if (!textRecognizer.isOperational) { isOperationalFlag = false }
+            else {
+                val frame: Frame = Frame.Builder().setBitmap(mBitMap).build()
+                val items = textRecognizer.detect(frame)
+
+                for (i in 0 until items.size()) {
+                    val item = items.valueAt(i) as TextBlock
+                    for(line in item.components) {
+                        for (word in line.components) {
+                            textElementRectList.add(word)
+                        }
+                    }
                 }
             }
 
-            fileNameTextView.text = strBuilder.toString()
-        }
-        setUpNewImageView(imageViewPrimary, bitMap)
-
+            handler.post {
+                if (textElementRectList.isNotEmpty()) {
+                    setUpNewImageView(imageViewPrimary)
+                }
+                else if (!isOperationalFlag) {
+                    setResult(ResultCode.RESULT_TEXT_RECOGNITION_SUPPORT_ERROR)
+                    finish()
+                }
+                else {
+                    setResult(ResultCode.RESULT_RECOGNITION_ERROR)
+                    finish()
+                }
+            }
+        }).start()
     }
 
-
-    private fun setUpNewImageView(imageViewPrimary: ImageView, bitMap: Bitmap) {
-        val layOutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val mainLayOut = findViewById<FrameLayout>(R.id.frameLayoutID)
-        mainLayOut.removeView(imageViewPrimary)
-        layOutParams.topMargin = convertDpToPx(applicationContext, 5F).toInt()
-        if (imageViewSecondary != null) { mainLayOut.removeView(imageViewSecondary) }
-        imageViewSecondary = MyImageView(applicationContext).apply {
-            layoutParams = layOutParams
-            scaleType = ImageView.ScaleType.FIT_XY
-            setImageBitmap(bitMap)
-            setPadding(0,0,0,0)
-            setBackgroundResource(R.drawable.back)
-            layOutParams.width = convertDpToPx(applicationContext, 355F).toInt()
-            layOutParams.height = convertDpToPx(applicationContext, 500F).toInt()
-            Log.e("IMAGE SOURCE #1", "Image: width -> ${layOutParams.width}, height -> ${layOutParams.height}")
-        }
-        mainLayOut.addView(imageViewSecondary)
-        SECONDARY_PHOTO_WIDTH = imageViewSecondary!!.layoutParams.width
-        SECONDARY_PHOTO_HEIGHT = imageViewSecondary!!.layoutParams.height
-        Log.e("IMAGE SOURCE #2", "Image: width -> ${bitMap.width}, height -> ${bitMap.height}")
-        Log.e("IMAGE VIEW SOURCE", "View: width -> ${imageViewSecondary!!.layoutParams.width}, height -> ${imageViewSecondary!!.layoutParams.height}")
-
-    }
-
-
-    private fun convertDpToPx(context: Context, dp: Float): Float = dp * context.resources.displayMetrics.density
-
-}
-
-
-class MyImageView(context: Context) : ImageView(context) {
-
-    var rectPaint = Paint()
-    var textPaint = Paint()
-
-    init {
-        rectPaint.color = Color.WHITE
-        rectPaint.strokeWidth = 4.0F
-        rectPaint.style = Paint.Style.STROKE
-
-        textPaint.color = Color.WHITE
-        textPaint.textSize = 54.0F
-        if (textElementRectList.size == 0) Toast.makeText(context, "There is no item found", Toast.LENGTH_SHORT).show()
-    }
-
-
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        var lineCount = 0
-        for (line in textElementRectList) {
-            val rect: RectF = line.boundingBox.toRectF()
-            rect.apply {
-                left = normalizeX(left)
-                top = normalizeY(top)
-                right = normalizeX(right)// - (normalizeX(right) / 100) * 30
-                bottom = normalizeY(bottom)
+    private fun detectFace() {
+        var isOperational = true
+        var faceDetected = true
+        val handler = Handler()
+        Thread(Runnable {
+            val faceDetector = FaceDetector.Builder(applicationContext)
+                .setTrackingEnabled(false)
+                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                .build()
+            if (!faceDetector.isOperational) { isOperational = false }
+            else {
+                val frame = Frame.Builder().setBitmap(mBitMap).build()
+                val faces = faceDetector.detect(frame)
+                if (faces.isNotEmpty()) {
+                    mFace = faces.valueAt(0)
+                } else {
+                    faceDetected = false
+                }
             }
 
-            canvas!!.drawRect(rect, rectPaint)
-            canvas.drawText("${lineCount++}: ${line.value}", rect.left, rect.bottom, textPaint)
+            handler.post {
+                if (!isOperational) {
+                    setResult(ResultCode.RESULT_FACE_DETECTOR_SUPPORT_ERROR)
+                    finish()
+                }else if (!faceDetected) {
+                    setResult(ResultCode.RESULT_FACE_DETECTION_ERROR)
+                    finish()
+                } else {
+                    progressBar.visibility = ProgressBar.INVISIBLE
+                }
+            }
+        }).start()
+    }
 
-            Log.e("ss",
-                "Coordinates for rectangle: ${rect.left}, ${rect.top}, ${rect.right}, " +
-                        "${rect.bottom}, list size = ${textElementRectList.size}")
+
+    private fun setUpNewImageView(imageViewPrimary: ImageView) {
+        var imageViewSecondary: MyImageView? = null
+        val mainLayOut = findViewById<FrameLayout>(R.id.frameLayoutID)
+        val layOutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT )
+        if (imageViewSecondary != null) { mainLayOut.removeView(imageViewSecondary) }
+
+        mainLayOut.removeView(imageViewPrimary)
+        imageViewSecondary = MyImageView(applicationContext, newImageProperty, textElementRectList).apply {
+            layoutParams = layOutParams
+            scaleType = ImageView.ScaleType.FIT_XY
+            setImageBitmap(mBitMap)
+            setPadding(0,0,0,0)
+            setBackgroundResource(R.drawable.image_border)
+            layOutParams.width = ImageProperty.convertDpToPx(applicationContext, SECONDARY_PHOTO_WIDTH).toInt()
+            layOutParams.height = ImageProperty.convertDpToPx(applicationContext, SECONDARY_PHOTO_HEIGHT).toInt()
+            setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    setUpTextByCoord(event.x, event.y)
+                }
+                    true }
         }
-        textElementRectList.clear()
+        mainLayOut.addView(imageViewSecondary)
     }
 
 
-    private fun normalizeX(x: Float) : Float {
-        val normalizeX: Float = x / (PRIMARY_PHOTO_WIDTH - x)
-        Log.e("normal", "Normalize x is ${normalizeX * SECONDARY_PHOTO_WIDTH}")
-        return normalizeX * SECONDARY_PHOTO_WIDTH
+    private fun setNewImageDimensions() {
+        newImageProperty = ImageProperty(
+            //primary image
+            mBitMap!!.width,
+            mBitMap!!.height,
+            //secondary image
+            ImageProperty.convertDpToPx(applicationContext, SECONDARY_PHOTO_WIDTH).toInt(),
+            ImageProperty.convertDpToPx(applicationContext, SECONDARY_PHOTO_HEIGHT).toInt())
     }
 
-    private fun normalizeY(y: Float) : Float{
-        val normalizeY: Float = y / (PRIMARY_PHOTO_HEIGHT)
-        Log.e("normal", "Normalize y is ${normalizeY * SECONDARY_PHOTO_HEIGHT}")
-        return normalizeY * SECONDARY_PHOTO_HEIGHT
+
+    private fun setUpTextByCoord(x: Float, y: Float) {
+        for(element in textElementRectList) {
+            val left = newImageProperty!!.normalizeX(element.boundingBox.left.toFloat())
+            val right = newImageProperty!!.normalizeX(element.boundingBox.right.toFloat())
+            val top = newImageProperty!!.normalizeY(element.boundingBox.top.toFloat())
+            val bottom = newImageProperty!!.normalizeY(element.boundingBox.bottom.toFloat())
+            if ( (x in left..right) and (y in top..bottom) ) {
+                if (currentPageNumber < 5) {
+                    pagerAdapter?.update(propertyNameList[currentPageNumber], element.value)
+                }
+            }
+        }
+    }
+
+
+    fun onSubmitButtonClick(view: View) {
+        val dataMap = pagerAdapter!!.getDataMap()
+        val emptyField = checkForEmptyField(dataMap)
+
+        if(emptyField == 0) {
+            val pictureTag = System.currentTimeMillis().toString()
+            val data = SimpleDateFormat("dd/M/yyyy hh:mm a", Locale.US)
+            val replyIntent = Intent()
+            val person = Person(
+                dataMap[propertyNameList[0]], dataMap[propertyNameList[2]],
+                dataMap[propertyNameList[1]], dataMap[propertyNameList[3]],
+                dataMap[propertyNameList[4]], pictureTag ,data.format(Date())
+            )
+            saveThumbnail(pictureTag)
+            replyIntent.putExtra(Person::class.java.simpleName, person)
+            setResult(Activity.RESULT_OK, replyIntent)
+            finish()
+        }
+        else {
+            Toast.makeText(applicationContext, "At least one field is empty!", Toast.LENGTH_SHORT).show()
+            viewPager?.currentItem = emptyField
+        }
+    }
+
+    private fun checkForEmptyField(dataMap: HashMap<String, String>) : Int {
+        var emptyField = 0
+        for (i in 0 until dataMap.size)
+            if (dataMap[propertyNameList[i]] == "") { emptyField = i }
+        return emptyField
+    }
+
+
+
+
+    private fun saveThumbnail(pictureTag: String?) {
+        //save file in internal storage
+        val handler = Handler()
+        if (mFace != null) {
+            progressBar?.visibility = ProgressBar.VISIBLE
+            Thread(Runnable {
+                applicationContext.openFileOutput(pictureTag, Context.MODE_PRIVATE).use {
+                    val byteOS = ByteArrayOutputStream()
+                    val thumbnail = ImageProperty.getIncreasedThumbnail(mBitMap, mFace)
+                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 40, byteOS)
+                    it.write(byteOS.toByteArray())
+                }
+
+                handler.post {
+                    progressBar?.visibility = ProgressBar.INVISIBLE
+                }
+            }).start()
+        } else {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mBitMap?.recycle()
+    }
+
+
+    inner class MyPageListener : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {
+        }
+
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        }
+
+        override fun onPageSelected(position: Int) {
+            currentPageNumber = position
+        }
+
+    }
+
+    fun onBackButtonClick(view: View) {
+        if (currentPageNumber > 0) {
+            viewPager?.currentItem = currentPageNumber - 1
+        }
+    }
+
+    fun onNextButtonClick(view: View) {
+        if (currentPageNumber < 6) {
+            viewPager?.currentItem = currentPageNumber + 1
+        }
     }
 }

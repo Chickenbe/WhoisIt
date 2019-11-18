@@ -13,97 +13,217 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:padding="0dp">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            android:orientation="vertical"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:padding="0dp"
+                                            android:background="#F8F7F7">
+
+    <ImageView android:layout_width="160dp"
+               android:layout_height="200dp"
+               app:layout_constraintEnd_toEndOf="parent"
+               android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+               android:layout_marginEnd="8dp" android:id="@+id/person_iv" android:scaleType="fitXY"
+               android:background="@drawable/card_view_border"/>
+
+
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:id="@+id/appBarLayout">
+
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/my_child_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="Information page" android:textAlignment="gravity"
+                app:subtitleTextAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ProgressBar android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/progressBarID"
+                 android:visibility="invisible"
+                 android:layout_centerInParent="true"
+                 app:layout_constraintEnd_toEndOf="@+id/person_iv"
+                 app:layout_constraintStart_toStartOf="@+id/person_iv" app:layout_constraintHorizontal_bias="0.515"
+                 app:layout_constraintTop_toTopOf="@+id/person_iv"
+                 app:layout_constraintBottom_toBottomOf="@+id/person_iv"/>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="205dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0.48"
+            android:id="@+id/cardView"
+            app:layout_constraintTop_toBottomOf="@+id/person_iv"
+            android:fadingEdgeLength="15dp" app:cardElevation="22dp" android:layout_marginTop="25dp">
+
+
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+            <TextView
+                    android:text="Personal information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textView9"
+                    android:layout_centerHorizontal="true" android:layout_marginTop="2dp"/>
+
+
+            <ScrollView android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="25dp">
+
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+                    <TextView
+                            android:text="Ivanovich"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/middle_name_tv"
+                            android:layout_alignParentStart="true" android:layout_marginStart="20dp"
+                            android:textSize="19sp" android:textStyle="bold"
+                            android:layout_alignParentTop="true" android:layout_marginTop="4dp"/>
+                    <TextView
+                            android:text="Middle name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/textView8"
+                            android:layout_alignParentStart="true" android:layout_marginStart="20dp"
+                            android:layout_below="@+id/middle_name_tv" android:textSize="10sp"
+                            android:layout_marginBottom="4dp"/>
+                    <TextView
+                            android:text="21/01/1999"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/birthday_tv"
+                            android:layout_below="@+id/view3"
+                            android:textSize="19sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" android:layout_marginStart="20dp"
+                            android:layout_alignParentStart="true"/>
+                    <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" android:id="@+id/view3"
+                            android:background="#AFAFAF"
+                            android:layout_below="@+id/textView8"/>
+                    <TextView
+                            android:text="Birthday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/textView16"
+                            android:layout_alignParentStart="true" android:layout_marginStart="20dp"
+                            android:layout_alignParentBottom="false"
+                            android:layout_below="@+id/birthday_tv" android:textSize="10sp"
+                            android:layout_marginBottom="4dp"/>
+
+                    <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" android:id="@+id/view4"
+                            android:background="#AFAFAF"
+                            android:layout_below="@+id/textView16"
+                            android:layout_alignParentStart="true"
+                    />
+
+                    <TextView
+                            android:text="3234234BM"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/id_tv"
+                            android:textSize="19sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="20dp"
+                            android:layout_alignParentStart="true" android:layout_below="@id/view4"
+                            android:layout_marginTop="4dp"/>
+
+                    <TextView
+                            android:text="ID"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:id="@+id/textView17"
+                            android:layout_alignParentStart="true" android:layout_marginStart="20dp"
+                            android:textSize="10sp"
+                            android:layout_below="@id/id_tv"
+                            android:layout_marginBottom="4dp"/>
+
+                    <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" android:id="@+id/view5"
+                            android:background="#AFAFAF"
+                            android:layout_below="@id/textView17"
+                            android:layout_alignParentStart="true"
+                    />
+
+                </RelativeLayout>
+
+            </ScrollView>
+
+
+            <!--<RelativeLayout android:layout_width="match_parent" android:layout_height="60dp"-->
+            <!--android:background="@drawable/card_view_border" android:layout_alignParentBottom="true"-->
+            <!--android:id="@+id/relativeL">-->
+
+
+            <!--<Button-->
+            <!--android:text="Delete"-->
+            <!--android:layout_width="94dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/button2"-->
+            <!--android:drawableRight="@drawable/ic_round_delete_forever_18px"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginBottom="5dp" android:layout_alignParentStart="true"-->
+            <!--android:layout_marginStart="20dp" android:layout_marginTop="5dp"/>-->
+            <!--<Button-->
+            <!--android:text="Edit"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/button"-->
+            <!--android:drawableRight="@drawable/ic_round_edit_18px"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_marginEnd="20dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginBottom="5dp" android:layout_marginTop="5dp"/>-->
+            <!--</RelativeLayout>-->
+
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
     <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/full_name_textView" android:textSize="30sp"
-            android:layout_marginHorizontal="10dp" android:layout_marginTop="40dp" android:textColor="#1278C7"
-    />
-    <View
+            android:text="Jack"
             android:layout_width="wrap_content"
-            android:layout_height="3dp"
-            android:background="#7b7b7b"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:id="@+id/view2" android:layout_marginHorizontal="10dp"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/name_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="52dp"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" android:textSize="24sp" android:textStyle="bold"
+            android:textColor="#6B6B6B"/>
     <TextView
-            android:text="@string/personal_inf_label"
+            android:text="Rokosovskiy"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/textView6"
-            android:layout_marginTop="50dp" android:textSize="16sp" android:layout_marginBottom="15dp"
-            android:layout_marginLeft="200dp" android:textColor="#376375"/>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <TextView
-                android:text="@string/last_name_label"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content" android:id="@+id/textView7" android:layout_marginHorizontal="10dp"
-                android:textSize="24sp"
-                android:fontFamily="sans-serif-condensed" android:textAlignment="viewStart" android:textStyle="bold"
-                android:textColor="#7b7b7b"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/last_name_textView" android:layout_weight="1"
-                android:textSize="24sp" android:textAlignment="textStart"
-                android:textColor="#3D4D58"/>
-    </LinearLayout>
-    <View
+            android:layout_height="wrap_content"
+            android:id="@+id/last_name_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/name_tv"
+            android:textSize="24sp" android:textColor="#6B6B6B" android:textStyle="bold"/>
+    <TextView
+            android:text="User"
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="#7b7b7b"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:id="@+id/view3" android:layout_marginHorizontal="10dp" android:layout_marginBottom="20dp"/>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <TextView
-                android:text="@string/birthday_label"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content" android:id="@+id/textView9" android:layout_marginHorizontal="10dp"
-                android:textSize="24sp"
-                android:fontFamily="sans-serif-condensed" android:textStyle="bold" android:textColor="#7b7b7b"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/birthday_textView" android:layout_weight="1"
-                android:textSize="24sp" android:textAlignment="textStart"
-                android:textColor="#033A64"/>
-    </LinearLayout>
-    <View
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="#7b7b7b"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:id="@+id/view4" android:layout_marginHorizontal="10dp" android:layout_marginBottom="20dp"/>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <TextView
-                android:text="@string/id_label"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content" android:id="@+id/textView11" android:layout_marginHorizontal="10dp"
-                android:textSize="24sp"
-                android:fontFamily="sans-serif-condensed" android:textStyle="bold" android:textColor="#7b7b7b"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/id_textView" android:layout_weight="1"
-                android:textSize="24sp" android:textAlignment="textStart"
-                android:textColor="#033A64"/>
-    </LinearLayout>
-    <View
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="#7b7b7b"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:id="@+id/view5" android:layout_marginHorizontal="10dp"/>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/name_tv" app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp" android:textColor="#AFAFAF"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

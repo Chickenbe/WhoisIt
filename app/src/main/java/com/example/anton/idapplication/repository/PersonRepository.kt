@@ -16,4 +16,9 @@ class PersonRepository(private val personDao: PersonDAO) {
         personDao.insert(person)
     }
 
+    @WorkerThread
+    suspend fun deletePerson(person: Person) {
+        personDao.deletePerson(person)
+    }
+
 }
