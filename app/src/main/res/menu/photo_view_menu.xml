@@ -2,16 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:title="@string/detect_face"
-          android:id="@+id/detect_face_action"
-          android:icon="@drawable/ic_detect_face"
-          app:showAsAction="ifRoom"/>
+    <item
+            android:id="@+id/detect_face_action"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="@string/detect_face"
+            app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/zoom_action"
-          android:icon="@drawable/ic_increase_face_24px"
-          app:showAsAction="ifRoom"
-          android:title="@string/Zoom"
-          android:visible="false"/>
+    <item
+            android:id="@+id/zoom_action"
+            android:icon="@android:drawable/ic_menu_add"
+            android:title="@string/Zoom"
+            android:visible="false"
+            app:showAsAction="ifRoom" />
 
     <item android:title="Back"
     android:id="@+id/back_action"
